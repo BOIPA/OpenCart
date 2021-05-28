@@ -1,0 +1,47 @@
+{% if error %}
+<div class="alert alert-danger alert-dismissible">{{ error }}</div>
+{% else %}
+
+<form id="gatewayForm" method="post" action="{{ post_url }}">
+  <input type="hidden" name="merchantTxId" id="merchantTxId"/>
+  <div class="buttons">
+    <div class="pull-right" id="button-confirm"><input  value="{{ button_confirm }}" data-loading-text="{{ text_loading }}" class="btn btn-primary" onclick="confirm()"/></div>
+  </div>
+  <div id="ipgCashierDiv"  style="height:400px;"></div>
+</form>
+
+<script src="{{ java_script_url }}"></script>
+<script type="text/javascript">
+    var timer; 
+    function handleResult(result,data) { 
+    	document.getElementById("merchantTxId").value = data.merchantTxId;
+        document.getElementById("gatewayForm").submit();
+    }
+     function pay() {
+         var token = "{{ token }}";
+         var merchantId = "{{ merchantId }}";
+         var cashier = com.myriadpayments.api.cashier();
+		cashier.init({ baseUrl: '{{ cashier_url }}' });
+		
+         cashier.show({ containerId: "ipgCashierDiv", merchantId: merchantId, token: token, successCallback: handleResult, failureCallback: handleResult, cancelCallback: handleResult });
+        
+         $('#button-confirm').hide();
+    };
+	    
+	function confirm(){
+		$('#button-confirm').button('loading');
+		 $("#button-confirm").prop('disabled', true);
+		timer = setInterval(function(){ check() }, 1000);
+	}
+	
+	function check(){
+		if(typeof(com) == 'undefined'){
+			return false;
+		}else{
+			
+			clearInterval(timer);
+			pay();
+		}
+	}
+     </script>
+{% endif %}
