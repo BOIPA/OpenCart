@@ -19,7 +19,7 @@ class ControllerExtensionPaymentBoipa extends Controller {
 			
 			$post_data = array();
 			$post_data['merchantId'] = trim($this->config->get('payment_boipa_clientid'));
-			$post_data['merchantTxId'] = substr(md5(uniqid(mt_rand(), true)), 0, 20);
+			$post_data['merchantTxId'] = $order_info['order_id'];//substr(md5(uniqid(mt_rand(), true)), 0, 20);
 			$post_data['password'] = trim($this->config->get('payment_boipa_password'));
 			$post_data['brandId'] = trim($this->config->get('payment_boipa_brandid'));
 			
